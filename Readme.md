@@ -67,6 +67,7 @@ If Docker is not available, follow these steps to set up a local environment:
 
 5. **Run the Streamlit app**:
    ```bash
+   cd frontend
    streamlit run app.py
    ```
 
