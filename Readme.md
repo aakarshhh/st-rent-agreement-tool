@@ -26,7 +26,7 @@ This document provides instructions on how to set up the project using Docker an
    - Ensure you have a `Dockerfile` and `docker-compose.yml` file in the project root.
    - Run the following commands:
      ```bash
-     docker-compose up --build
+     docker-compose up -d --build
      ```
 
 4. **Access the Streamlit application**:
@@ -44,8 +44,8 @@ If Docker is not available, follow these steps to set up a local environment:
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/aakarshhh/st-rent-agreement-tool.git
+   cd st-rent-agreement-tool
    ```
 
 2. **Set up a virtual environment**:
@@ -67,7 +67,7 @@ If Docker is not available, follow these steps to set up a local environment:
 
 5. **Run the Streamlit app**:
    ```bash
-   streamlit run app.py --server.port=8501 --server.address=0.0.0.0
+   streamlit run app.py
    ```
 
 6. **Access the application**:
@@ -75,6 +75,7 @@ If Docker is not available, follow these steps to set up a local environment:
      ```
      http://localhost:8501
      ```
+     This is the default Address , a window to the web-app automatically opens up when you start the app using CLI.
 
 ---
 
@@ -86,5 +87,4 @@ If Docker is not available, follow these steps to set up a local environment:
 ---
 
 Feel free to reach out if you have any questions or need additional support!
-
 akss4567@gmail.com
