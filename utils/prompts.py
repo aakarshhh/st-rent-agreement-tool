@@ -1,3 +1,59 @@
+from pydantic import BaseModel, Field
+from typing import List, Literal, Optional
+
+class CriticalTerm(BaseModel):
+    """
+    Represents a flagged critical term within a rental agreement that is not explicitly covered by other fields.
+    """
+    FlaggedTerm: str = Field(..., description="The identified Critical Term extracted from the Agreement")
+    Details: str = Field(..., description="Details of the identified Critical Term from the Agreement")
+    Inference: str = Field(..., description="The problem that may arise because of the Flagged Term or its implications")
+
+class RentalAgreement(BaseModel):
+    """
+    Defines the schema for extracting and validating rental agreement data.
+    """
+    PropertyAddress: str = Field(..., description="The complete address of the rental property")
+    LandlordName: str = Field(..., description="The name of the person/entity leasing the property")
+    TenantName: str = Field(..., description="The name of the person/entity renting the property")
+    RentalAmount: str = Field(..., description="The monthly/annual rent agreed upon")
+    SecurityDeposit: str = Field(..., description="The amount paid as a deposit")
+    LeaseDuration: str = Field(..., description="The tenure of the lease (e.g., 11 months, 2 years)")
+    NoticePeriod: str = Field(..., description="The notice duration required to terminate the agreement")
+    UtilitiesResponsibility: Literal["Tenant", "Owner"] = Field(..., description="Details of who bears the cost of utilities")
+    LatePaymentClause: str = Field(..., description="Penalties for late rent payments")
+    TerminationClause: str = Field(..., description="Conditions under which the agreement can be terminated by either party")
+    CriticalTerms: List[CriticalTerm] = Field(
+        default_factory=list,
+        description="Flag any and all critical terms exclusively that NOT extracted already in the schema but deemed significant (e.g., clauses on property damage, maintenance, subletting, etc.). Empty list if not found."
+    )
+
+class ComparisonReportEntry(BaseModel):
+    """
+    Represents a single comparison entry between two rental agreement terms.
+    """
+    KeyTerm: str = Field(..., description="The term in Data Dictionary (e.g., Property Address, Notice Period)")
+    Document1: str = Field(..., alias="Document-1", description="Value as given in Document-1")
+    Document2: str = Field(..., alias="Document-2", description="Value as given in Document-2")
+    MismatchOrComment: str = Field(..., alias="Mismatch/Comment", description="If there is a mismatch or any other brief comment about the comparison")
+    Inference: str = Field(..., description="Detailed implications and nuanced explanation of the potential legal, financial, or practical consequences")
+
+    class Config:
+        populate_by_name = True
+
+
+class ComparisonReport(BaseModel):
+    """
+    Represents a complete comparison report between two rental agreements.
+    """
+    ComparisonReport: List[ComparisonReportEntry] = Field(
+        ..., 
+        description="Comparison for each term in both document data except Critical Terms"
+    )
+    class Config:
+        populate_by_name = True
+
+
 EXTRACT_FORMAT="""
 Return a JSON Response for else the code will FAIL!!!:
 
@@ -69,46 +125,3 @@ For each Field or Term in data dictionary for each document(except Critical Term
 compare all terms EXCEPT "Critical Terms"!!!
 return JSON
 """
-
-from pydantic import BaseModel, Field
-from typing import List, Literal, Optional
-
-class CriticalTerm(BaseModel):
-    FlaggedTerm: str = Field(..., description="The identified Critical Term extracted from the Agreement")
-    Details: str = Field(..., description="Details of the identified Critical Term from the Agreement")
-    Inference: str = Field(..., description="The problem that may arise because of the Flagged Term or its implications")
-
-class RentalAgreement(BaseModel):
-    PropertyAddress: str = Field(..., description="The complete address of the rental property")
-    LandlordName: str = Field(..., description="The name of the person/entity leasing the property")
-    TenantName: str = Field(..., description="The name of the person/entity renting the property")
-    RentalAmount: str = Field(..., description="The monthly/annual rent agreed upon")
-    SecurityDeposit: str = Field(..., description="The amount paid as a deposit")
-    LeaseDuration: str = Field(..., description="The tenure of the lease (e.g., 11 months, 2 years)")
-    NoticePeriod: str = Field(..., description="The notice duration required to terminate the agreement")
-    UtilitiesResponsibility: Literal["Tenant", "Owner"] = Field(..., description="Details of who bears the cost of utilities")
-    LatePaymentClause: str = Field(..., description="Penalties for late rent payments")
-    TerminationClause: str = Field(..., description="Conditions under which the agreement can be terminated by either party")
-    CriticalTerms: List[CriticalTerm] = Field(
-        default_factory=list,
-        description="Flag any and all critical terms exclusively that NOT extracted already in the schema but deemed significant (e.g., clauses on property damage, maintenance, subletting, etc.). Empty list if not found."
-    )
-
-class ComparisonReportEntry(BaseModel):
-    KeyTerm: str = Field(..., description="The term in Data Dictionary (e.g., Property Address, Notice Period)")
-    Document1: str = Field(..., alias="Document-1", description="Value as given in Document-1")
-    Document2: str = Field(..., alias="Document-2", description="Value as given in Document-2")
-    MismatchOrComment: str = Field(..., alias="Mismatch/Comment", description="If there is a mismatch or any other brief comment about the comparison")
-    Inference: str = Field(..., description="Detailed implications and nuanced explanation of the potential legal, financial, or practical consequences")
-
-    class Config:
-        populate_by_name = True
-
-
-class ComparisonReport(BaseModel):
-    ComparisonReport: List[ComparisonReportEntry] = Field(
-        ..., 
-        description="Comparison for each term in both document data except Critical Terms"
-    )
-    class Config:
-        populate_by_name = True

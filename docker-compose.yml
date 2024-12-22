@@ -9,4 +9,4 @@ services:
       - ./uploaded_files:/app/uploaded_files  # Mount uploaded files directory
     environment:
       - OPEN_AI_API_KEY=YourOpenAIAPIKey
-    command: ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+    command: ["streamlit", "run", "/app/frontend/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
