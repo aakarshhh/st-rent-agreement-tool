@@ -16,8 +16,8 @@ This document provides instructions on how to set up the project using Docker an
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
-   cd <repository-folder>
+   git clone https://github.com/aakarshhh/st-rent-agreement-tool.git
+   cd st-rent-agreement-tool
    ```
 2. **Environment Variables**:
    - Before running Docker, ensure the following environment variables are configured: Replace `YourOpenAIKey` in the `docker-compose.yml` file with your actual OpenAI API key.
